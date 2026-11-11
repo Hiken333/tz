@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+:root {
+  --enamel: #eef3ee;
+  --night: #16343f;
+  --amber: #d4920a;
+  --ink: #142022;
+  --fog: #a8b6b0;
+  --brick: #9c3a32;
+  --plate: #f7faf6;
+  --line: #cfdad3;
+}
+
+@theme inline {
+  --color-enamel: var(--enamel);
+  --color-night: var(--night);
+  --color-amber: var(--amber);
+  --color-ink: var(--ink);
+  --color-fog: var(--fog);
+  --color-brick: var(--brick);
+  --color-plate: var(--plate);
+  --color-line: var(--line);
+  --font-display: var(--font-unbounded);
+  --font-body: var(--font-golos);
+}
+
+html {
+  background: var(--enamel);
+  color: var(--ink);
+  touch-action: manipulation;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body), sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(212, 146, 10, 0.08), transparent 28%),
+    linear-gradient(180deg, #e7eee8 0%, var(--enamel) 38%);
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--night);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -40px;
+  background: var(--night);
+  color: var(--enamel);
+  padding: 8px 12px;
+  z-index: 20;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.route-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  position: relative;
+}
+
+.route-strip::before {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 6px;
+  height: 6px;
+  background: var(--amber);
+  border-radius: 999px;
+}
+
+.route-stop {
+  position: relative;
+  padding: 0 12px 8px;
+  text-align: left;
+}
+
+.route-stop .pin {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--plate);
+  border: 4px solid var(--night);
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .route-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 12px;
+  }
+
+  .route-strip::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

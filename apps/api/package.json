@@ -1,0 +1,34 @@
+{
+  "name": "@istinny/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./app": {
+      "types": "./src/app.ts",
+      "default": "./src/app.ts"
+    }
+  },
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun src/db/migrate.ts",
+    "db:seed": "bun src/db/seed.ts"
+  },
+  "dependencies": {
+    "@elysia/cors": "2.0.0-beta.2",
+    "drizzle-orm": "^0.45.4",
+    "elysia": "2.0.0-rc.1",
+    "exact-mirror": "^1.2.7",
+    "postgres": "^4.1.1",
+    "typebox": "^1.4.6"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.4",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "^7.0.2"
+  }
+}

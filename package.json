@@ -1,0 +1,31 @@
+{
+  "name": "istinny-intel",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "bun run --filter '*' dev",
+    "dev:api": "bun run --filter @istinny/api dev",
+    "dev:web": "bun run --filter @istinny/web dev",
+    "test": "bun run --filter @istinny/api test",
+    "typecheck": "bun run --filter '*' typecheck",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "db:migrate": "bun run --filter @istinny/api db:migrate",
+    "db:seed": "bun run --filter @istinny/api db:seed",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "^1.93.0"
+  },
+  "lint-staged": {
+    "*": "oxfmt --no-error-on-unmatched-pattern",
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "oxlint --fix"
+  }
+}

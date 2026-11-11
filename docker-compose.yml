@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: geo
+      POSTGRES_PASSWORD: geo
+      POSTGRES_DB: geo
+    ports:
+      - "5433:5432"
+    volumes:
+      - geo-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo -d geo"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: istinny-api:local
+    environment:
+      DATABASE_URL: postgres://geo:geo@db:5432/geo
+      COOKIE_SECRET: ${COOKIE_SECRET:-dev-cookie-secret-change-me}
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
+      API_PORT: "3001"
+      SEED_ON_START: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_URL: http://api:3001
+    image: istinny-web:local
+    environment:
+      API_URL: http://api:3001
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  geo-pg:
