@@ -12,6 +12,13 @@ const metricLabels = {
   routesBuilt: "Построенные маршруты",
 } as const;
 
+const metricUnits = {
+  cardViews: "просмотров",
+  siteClicks: "переходов",
+  calls: "звонков",
+  routesBuilt: "маршрутов",
+} as const;
+
 type Search = {
   period?: string;
   branchId?: string;
@@ -105,60 +112,57 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
       <section className="border border-night bg-plate px-4 py-6 md:px-8">
         <h1 className="font-[family-name:var(--font-display)] text-3xl text-pretty text-night">
-          Линия показателей
+          Сумма за период
         </h1>
         <p className="mt-2 mb-8 max-w-2xl text-ink/75">
-          Одна линия — как маршрут до филиала. Нажмите остановку, чтобы открыть её динамику.
+          Цифры — итог по выбранным филиалам. Нажмите просмотры, сайт, звонки или маршруты: ниже
+          откроется график по дням.
         </p>
         <ol className="route-strip">
+          <MetricStop
+            href={query({ period, branchId, metric: "cardViews" })}
+            label="Просмотры"
+            value={formatCount(totals.cardViews)}
+            variant={metric === "cardViews" ? "selected" : "idle"}
+          />
+          <MetricStop
+            href={query({ period, branchId, metric: "siteClicks" })}
+            label="На сайт"
+            value={formatCount(totals.siteClicks)}
+            variant={metric === "siteClicks" ? "selected" : "idle"}
+          />
+          <MetricStop
+            href={query({ period, branchId, metric: "calls" })}
+            label="Звонки"
+            value={formatCount(totals.calls)}
+            variant={metric === "calls" ? "selected" : "idle"}
+          />
+          <MetricStop
+            href={query({ period, branchId, metric: "routesBuilt" })}
+            label="Маршруты"
+            value={formatCount(totals.routesBuilt)}
+            variant={metric === "routesBuilt" ? "selected" : "idle"}
+          />
           <li className="route-stop">
-            <Link href={query({ period, branchId, metric: "cardViews" })} className="block">
-              <div className="pin" />
-              <p className="text-sm text-ink/70">Просмотры</p>
-              <p className="tabular font-[family-name:var(--font-display)] text-3xl">
-                {formatCount(totals.cardViews)}
-              </p>
-            </Link>
-          </li>
-          <li className="route-stop">
-            <Link href={query({ period, branchId, metric: "siteClicks" })} className="block">
-              <div className="pin" />
-              <p className="text-sm text-ink/70">На сайт</p>
-              <p className="tabular font-[family-name:var(--font-display)] text-3xl">
-                {formatCount(totals.siteClicks)}
-              </p>
-            </Link>
-          </li>
-          <li className="route-stop">
-            <Link href={query({ period, branchId, metric: "calls" })} className="block">
-              <div className="pin" />
-              <p className="text-sm text-ink/70">Звонки</p>
-              <p className="tabular font-[family-name:var(--font-display)] text-3xl">
-                {formatCount(totals.calls)}
-              </p>
-            </Link>
-          </li>
-          <li className="route-stop">
-            <Link href={query({ period, branchId, metric: "routesBuilt" })} className="block">
-              <div className="pin" />
-              <p className="text-sm text-ink/70">Маршруты</p>
-              <p className="tabular font-[family-name:var(--font-display)] text-3xl">
-                {formatCount(totals.routesBuilt)}
-              </p>
-            </Link>
-          </li>
-          <li className="route-stop">
-            <div className="pin" />
+            <div className="track" aria-hidden="true">
+              <span className="rail rail-start" />
+              <span className="pin" />
+              <span className="rail rail-end" />
+            </div>
             <p className="text-sm text-ink/70">Рейтинг</p>
-            <p className="tabular font-[family-name:var(--font-display)] text-3xl">
+            <p className="tabular font-[family-name:var(--font-display)] text-2xl md:text-3xl">
               {totals.avgRating.toFixed(2)}
             </p>
           </li>
           <li className="route-stop">
             <Link href="/reviews" className="block">
-              <div className="pin" />
+              <div className="track" aria-hidden="true">
+                <span className="rail rail-start" />
+                <span className="pin" />
+                <span className="rail rail-end" />
+              </div>
               <p className="text-sm text-ink/70">Отзывы</p>
-              <p className="tabular font-[family-name:var(--font-display)] text-3xl">
+              <p className="tabular font-[family-name:var(--font-display)] text-2xl md:text-3xl">
                 {formatCount(totals.reviewsCount)}
               </p>
             </Link>
@@ -167,9 +171,45 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       </section>
 
       <section className="mt-8">
-        <RouteChart series={summary.series} label={`${metricLabels[metric]} за выбранный период`} />
+        <RouteChart
+          series={summary.series}
+          label={metricLabels[metric]}
+          unit={metricUnits[metric]}
+        />
       </section>
     </CabinetFrame>
+  );
+}
+
+function MetricStop({
+  href,
+  label,
+  value,
+  variant,
+}: {
+  href: string;
+  label: string;
+  value: string;
+  variant: "selected" | "idle";
+}) {
+  return (
+    <li className="route-stop" {...(variant === "selected" ? { "data-current": "" } : {})}>
+      <Link
+        href={href}
+        className="block"
+        aria-current={variant === "selected" ? "page" : undefined}
+      >
+        <div className="track" aria-hidden="true">
+          <span className="rail rail-start" />
+          <span className="pin" />
+          <span className="rail rail-end" />
+        </div>
+        <p className="text-sm text-ink/70">{label}</p>
+        <p className="tabular font-[family-name:var(--font-display)] text-2xl md:text-3xl">
+          {value}
+        </p>
+      </Link>
+    </li>
   );
 }
 

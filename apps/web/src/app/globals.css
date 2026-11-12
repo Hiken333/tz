@@ -71,44 +71,59 @@ button:hover:not(:disabled) {
 .route-strip {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0;
-  position: relative;
-}
-
-.route-strip::before {
-  content: "";
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 6px;
-  height: 6px;
-  background: var(--amber);
-  border-radius: 999px;
 }
 
 .route-stop {
-  position: relative;
-  padding: 0 12px 8px;
-  text-align: left;
+  min-width: 0;
+  text-align: center;
+}
+
+.route-stop .track {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 18px;
+  margin-bottom: 10px;
+}
+
+.route-stop .rail {
+  flex: 1 1 auto;
+  height: 4px;
+  background: var(--amber);
+}
+
+.route-stop:first-child .rail-start,
+.route-stop:last-child .rail-end {
+  background: transparent;
 }
 
 .route-stop .pin {
-  width: 16px;
-  height: 16px;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   background: var(--plate);
-  border: 4px solid var(--night);
-  margin-bottom: 18px;
+  border: 3px solid var(--night);
+}
+
+.route-stop[data-current] .pin {
+  background: var(--night);
+}
+
+.route-stop a:hover .pin {
+  border-color: var(--amber);
 }
 
 @media (max-width: 900px) {
   .route-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 20px;
   }
+}
 
-  .route-strip::before {
-    display: none;
+@media (max-width: 560px) {
+  .route-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
